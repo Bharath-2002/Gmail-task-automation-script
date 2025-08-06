@@ -1,0 +1,13 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore database files
+emails.db
+
+# Ignore credentials and tokens
+credentials.json
+token.json
+
+# Ignore VS Code settings
+.vscode/
