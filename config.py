@@ -11,4 +11,4 @@ TOKEN_FILE = "token.json"
 RULES_FILE = "rules.json"
 
 MAX_RESULTS = 50 
-GMAIL_QUERY = "after:2025/07/01"  
+GMAIL_QUERY = "after:2025/07/05"  

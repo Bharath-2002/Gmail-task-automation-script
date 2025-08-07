@@ -1,0 +1,18 @@
+[
+  {
+    "predicate": "any",
+    "conditions": [
+      { "field": "From", "predicate": "contains", "value": "donotreply@angelbroking.com" },
+      { "field": "From", "predicate": "contains", "value": "contract.notes@angeltrade.in" }
+    ],
+    "actions": ["mark_read", "move_to:angelone"]
+  },
+  {
+    "predicate": "any",
+    "conditions": [
+      { "field": "From", "predicate": "contains", "value": "noreply@dare2compete.news" },
+      { "field": "Message", "predicate": "contains", "value": "Important" }
+    ],
+    "actions": ["mark_read", "move_to:test2"]
+  }
+]
