@@ -166,7 +166,7 @@ pytest
 
 * Do **not** share `credentials.json` or `token.json` publicly.
 * You can update `rules.json` anytime — the script will apply the latest rules when run again.
-* Make sure you have labels created in Gmail before applying them in rules.
+* labels will be created if it doesnot exist
 
 ---
 
