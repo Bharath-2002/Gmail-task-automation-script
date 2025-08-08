@@ -71,49 +71,86 @@ python main.py
 ```
 ---
 
+
 ## ⚙️ Adjusting `rules.json`
 
-The `rules.json` file contains your automation rules.
-Each rule has **conditions** and **actions**.
-
-### Example:
-
-```json
-[
-    {
-        "conditions": {
-            "from": "newsletter@example.com"
-        },
-        "actions": [
-            "mark_read",
-            "apply_label:Work"
-        ]
-    },
-    {
-        "conditions": {
-            "subject": "Invoice"
-        },
-        "actions": [
-            "apply_label:Finance"
-        ]
-    }
-]
-```
-
-### Available Conditions:
-
-* `"from"` → Match sender email.
-* `"subject"` → Match subject text.
-* `"contains"` → Match keyword in email body.
-
-### Available Actions:
-
-* `"mark_read"` → Marks email as read.
-* `"mark_unread"` → Marks email as unread.
-* `"apply_label:<LabelName>"` → Applies a Gmail label to the email.
-* `"remove_label:<LabelName>"` → Removes a Gmail label.
+The `rules.json` file defines how incoming emails should be filtered and what actions should be taken.
 
 ---
+
+### 📂 **Example:**
+````markdown
+```json
+[
+  {
+    "predicate": "any",
+    "conditions": [
+      { "field": "From", "predicate": "contains", "value": "donotreply@angelbroking.com" },
+      { "field": "From", "predicate": "contains", "value": "contract.notes@angeltrade.in" }
+    ],
+    "actions": ["mark_read", "move_to:angelone"]
+  },
+  {
+    "predicate": "any",
+    "conditions": [
+      { "field": "From", "predicate": "contains", "value": "noreply@dare2compete.news" },
+      { "field": "Message", "predicate": "contains", "value": "Important" }
+    ],
+    "actions": ["mark_read", "move_to:test2"]
+  }
+]
+````
+
+---
+
+### 🔍 **Rule Structure**
+
+Each rule contains:
+
+| Key          | Description                                                                                                                                                                                                                                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `predicate`  | Defines how multiple conditions are evaluated. Possible values:<br>• `"any"` → Match if **any** condition is true.<br>• `"all"` → Match if **all** conditions are true.                                                                                                                                                        |
+| `conditions` | A list of individual conditions to check. Each condition has: <br>• `field` → Which email attribute to check (`From`, `To`, `Subject`, `Message`, `DateReceived`).<br>• `predicate` → How to compare the field (e.g., `contains`, `equals`, `less_than_days`, `greater_than_days`).<br>• `value` → The value to match against. |
+| `actions`    | A list of actions to apply when the rule matches.                                                                                                                                                                                                                                                                              |
+
+---
+
+### 📝 **Available Fields for `conditions`**
+
+| Field          | Example Value                                      | Description               |
+| -------------- | -------------------------------------------------- | ------------------------- |
+| `From`         | `"donotreply@example.com"`                         | Sender email address.     |
+| `To`           | `"myemail@example.com"`                            | Recipient email address.  |
+| `Subject`      | `"Invoice"`                                        | Email subject.            |
+| `Message`      | `"urgent"`                                         | Email body text.          |
+| `DateReceived` | `"less_than_days": 7` or `"greater_than_days": 30` | Age of the email in days. |
+
+---
+
+### 🔍 **Predicates for Conditions**
+
+| Predicate           | Example                            | Description                                                            |
+| ------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
+| `contains`          | `"predicate": "contains"`          | True if field contains the value (case-insensitive).                   |
+| `equals`            | `"predicate": "equals"`            | True if field exactly matches the value.                               |
+| `less_than_days`    | `"predicate": "less_than_days"`    | True if the email was received within the given number of days.        |
+| `greater_than_days` | `"predicate": "greater_than_days"` | True if the email was received more than the given number of days ago. |
+
+---
+
+### 🎯 **Available Actions**
+
+| Action                 | Example                  | Description                             |
+| ---------------------- | ------------------------ | --------------------------------------- |
+| `mark_read`            | `"mark_read"`            | Marks email as read.                    |
+| `mark_unread`          | `"mark_unread"`          | Marks email as unread.                  |
+| `move_to:<Label>`      | `"move_to:Work"`         | Moves email to the given Gmail label.   |
+| `apply_label:<Label>`  | `"apply_label:Finance"`  | Adds the given label to the email.      |
+| `remove_label:<Label>` | `"remove_label:Finance"` | Removes the given label from the email. |
+
+---
+
+
 
 ## 🧪 Running Tests
 
