@@ -63,7 +63,7 @@ Once you have your `credentials.json` file and have installed dependencies:
 
 
 
-* On first run,python token_creation_script.py , a browser window will open asking you to log into your Google account and grant permissions.
+* On first run,`python token_creation_script.py` , a browser window will open asking you to log into your Google account and grant permissions.
 * A `token.json` file will be created for future authentication (you won’t have to log in every time).
   
 ```bash
