@@ -29,15 +29,26 @@ def authenticate_gmail():
     service = build('gmail', 'v1', credentials=creds)
     return service
 
-def list_messages(service, query, max_results):
-    results = service.users().messages().list(
-        userId='me',
-        labelIds=['INBOX'],
-        q=query,
-        maxResults=max_results
-    ).execute()
-    messages = results.get('messages', [])
-    return messages
+def list_messages(service, query, max_results=None):
+    all_messages = []
+    page_token = None
+
+    while True:
+        results = service.users().messages().list(
+            userId='me',
+            labelIds=['INBOX'],
+            q=query,
+            maxResults=max_results,
+            pageToken=page_token
+        ).execute()
+
+        messages = results.get('messages', [])
+        all_messages.extend(messages)
+
+        page_token = results.get('nextPageToken')
+        if not page_token:
+            break
+    return all_messages
 
 def get_message(service, msg_id):
     message = service.users().messages().get(
@@ -48,7 +59,6 @@ def get_message(service, msg_id):
     return message
 
 def modify_message(service, msg_id, add_labels=None, remove_labels=None):
-    print("add labels: ", add_labels)
     body = {}
     if add_labels:
         body['addLabelIds'] = add_labels

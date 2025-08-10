@@ -2,6 +2,7 @@
 from gmail_service import authenticate_gmail, list_messages, get_message, modify_message, list_labels
 from database import create_table, save_email, fetch_emails
 from rules_engine import load_rules, evaluate_rules
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from config import GMAIL_QUERY, MAX_RESULTS
 from datetime import datetime
 
@@ -26,16 +27,27 @@ def parse_email(msg):
         'labels': ','.join(msg.get('labelIds', []))
     }
 
+def process_email(msg_meta):
+    service = authenticate_gmail()
+    msg = get_message(service, msg_meta['id'])
+    parsed = parse_email(msg)
+    save_email(parsed)
+    return msg_meta['id']
+
 def main():
     create_table()
     service = authenticate_gmail()
     print("Authenticated successfully.")
     messages = list_messages(service, GMAIL_QUERY, MAX_RESULTS)
     print(f"Found {len(messages)} messages matching the query.")
-    for msg_meta in messages:
-        msg = get_message(service, msg_meta['id'])
-        parsed = parse_email(msg)
-        save_email(parsed)
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [executor.submit(process_email, meta) for meta in messages]
+        for future in as_completed(futures):
+            try:
+                email_id = future.result()
+                print(f"Processed email ID: {email_id}")
+            except Exception as e:
+                print(f"Error processing email: {e}")
     print("Emails saved to the database.")
     rules = load_rules()
     emails = fetch_emails()
