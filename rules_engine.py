@@ -2,6 +2,7 @@
 import json
 from datetime import datetime, timedelta
 from config import RULES_FILE
+from dateutil.relativedelta import relativedelta
 
 def load_rules():
     with open(RULES_FILE) as f:
@@ -25,6 +26,12 @@ def match_condition(email, condition):
             return date_received < threshold
         elif predicate == 'greater_than_days':
             threshold = datetime.now() - timedelta(days=int(value))
+            return date_received > threshold
+        elif predicate == 'less_than_months':
+            threshold = datetime.now() - relativedelta(months=int(value))
+            return date_received < threshold
+        elif predicate == 'greater_than_months':
+            threshold = datetime.now() - relativedelta(months=int(value))
             return date_received > threshold
         return False
     else:

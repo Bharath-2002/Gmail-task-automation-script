@@ -39,13 +39,12 @@ def main():
     service = authenticate_gmail()
     print("Authenticated successfully.")
     messages = list_messages(service, GMAIL_QUERY, MAX_RESULTS)
-    print(f"Found {len(messages)} messages matching the query.")
+    print("saving emails to the database...")
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(process_email, meta) for meta in messages]
         for future in as_completed(futures):
             try:
                 email_id = future.result()
-                print(f"Processed email ID: {email_id}")
             except Exception as e:
                 print(f"Error processing email: {e}")
     print("Emails saved to the database.")
