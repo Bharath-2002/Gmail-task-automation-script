@@ -52,3 +52,12 @@ def fetch_emails():
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+def clear_emails():
+    """Delete all rows from the emails table."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM emails")
+    conn.commit()
+    conn.close()
+    print("All emails have been deleted from the database.")
